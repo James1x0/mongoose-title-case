@@ -2,7 +2,9 @@
   Mongoose Title Case
 */
 
-var titlize = require('change-case').title;
+function titlize (str) {
+  return str.toLowerCase().replace(/^.| .|'.|-./g, match => match.toUpperCase());
+}
 
 /**
  * Title Case Plugin Signature
@@ -13,7 +15,7 @@ var titlize = require('change-case').title;
  * @return {Object}         Mongoose Schema
  */
 function MongooseTitleCase (schema, options) {
-  if( !options.paths ) {
+  if (!options.paths) {
     throw new Error('Mongoose Title Case requires "paths" to be specified in the options hash');
   }
 
@@ -29,13 +31,13 @@ function MongooseTitleCase (schema, options) {
         var raw = this.get(_path),
             previousValue = previous ? previous.get(_path) : false;
 
-        if( !raw || !!previousValue && previousValue === raw ) {
+        if (!raw || !!previousValue && previousValue === raw) {
           return;
         }
 
         var updateValue = titlize(raw);
 
-        if ( path.trim !== false && options.trim !== false ) {
+        if (path.trim !== false && options.trim !== false) {
           updateValue = updateValue.trim();
         }
 
@@ -45,7 +47,7 @@ function MongooseTitleCase (schema, options) {
       next();
     };
 
-    if( this.isNew ) {
+    if (this.isNew) {
       parse();
     } else {
       doc.constructor.findById(this._id)

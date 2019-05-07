@@ -1,12 +1,15 @@
 ## mongoose-title-case
-A mongoose.js plugin for titlizing & trimming schemas.
+A mongoose.js plugin for titlizing ~& trimming~ schemas.
 
 ### Installation
 ```
 $ npm install mongoose-title-case --save
+OR
+$ yarn add mongoose-title-case
 ```
 
 ### Usage
+*NOTE: Schema#trim is now a path option in mongoose. Use of mongoose-title-case's trim option is deprecated.*
 Mongoose plugin style.
 
 ```javascript
@@ -54,4 +57,4 @@ document.save().then(record => {
 There are only two options used in mongoose-title-case
 
 + **options.paths** {Array} (*Required*) Array of paths to title case & trim
-+ **options.trim** {Boolean} Trim all paths. `true` by default
++ **options.trim** {Boolean} Trim all paths. `true` by default **DEPRECATED**
