@@ -9,13 +9,13 @@ $ yarn add mongoose-title-case
 ```
 
 ### Usage
-*NOTE: Schema#trim is now a path option in mongoose. Use of mongoose-title-case's trim option is deprecated.*
+*NOTE: Schema#trim is now a path option in mongoose. Use of mongoose-title-case's trim option is deprecated and will be removed in a future release.*
 Mongoose plugin style.
 
 ```javascript
 var mongoose = require('mongoose'),
     Schema   = mongoose.Schema,
-    titlize = require('mongoose-title-case'),
+    titleize = require('mongoose-title-case'),
 
 var userSchema = new Schema({
   name: {
@@ -25,7 +25,7 @@ var userSchema = new Schema({
 });
 
 // Attach some mongoose hooks
-userSchema.plugin(titlize, {
+userSchema.plugin(titleize, {
   paths: [ 'name.first', { path: 'name.last', trim: false } ], // Array of paths
   trim: true
 });
@@ -54,7 +54,9 @@ document.save().then(record => {
 
 ### Options
 
-There are only two options used in mongoose-title-case
+Options used in mongoose-title-case
 
-+ **options.paths** {Array} (*Required*) Array of paths to title case & trim
++ **options.paths** {[String|{ path: String, surname: Boolean }]} (*Required*) Array of paths to title case & trim
++ **options.paths.*.surname** {Boolean} Tells title-case to respect this field as a surname, meaning it will run it against a prefix dictionary.
 + **options.trim** {Boolean} Trim all paths. `true` by default **DEPRECATED**
++ **options.surnamePrefixes** {[String]} A dictionary of surname prefixes to replace the included dictionary.

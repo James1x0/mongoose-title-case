@@ -1,9 +1,18 @@
 /*
   Mongoose Title Case
 */
+const SURNAME_PREFIX_DICT = [
+  'mc',
+  'mac',
+  'fitz'
+];
 
-function titlize (str) {
-  return str.toLowerCase().replace(/^.| .|'.|-./g, match => match.toUpperCase());
+function titleize (str, options = {}) {
+  let expression = options.prefixes ?
+    new RegExp('^.| .|\'.|-.|' + options.prefixes.map(p => `(?<=${p}).`).join('|'), 'gi') :
+    /^.| .|'.|-./g;
+
+  return str.toLowerCase().replace(expression, match => match.toUpperCase());
 }
 
 /**
@@ -35,13 +44,21 @@ function MongooseTitleCase (schema, options) {
           return;
         }
 
-        var updateValue = titlize(raw);
+        const titleizeArgs = [ raw ];
+
+        if (path.surname) {
+          titleizeArgs.push({
+            prefixes: options.surnamePrefixes || SURNAME_PREFIX_DICT
+          });
+        }
+
+        var updateValue = titleize.apply(null, titleizeArgs);
 
         if (path.trim !== false && options.trim !== false) {
           updateValue = updateValue.trim();
         }
 
-        this.set(path, updateValue);
+        this.set(_path, updateValue);
       });
 
       next();

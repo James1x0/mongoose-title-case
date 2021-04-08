@@ -10,7 +10,7 @@ const createModel = (name, schema) => {
 };
 
 const transform = (data) => {
-  return [ 'someFieldTitleized', 'someOtherFieldTitleized', 'someFieldNotTouched' ].reduce((obj, key) => {
+  return [ 'someFieldTitleized', 'someOtherFieldTitleized', 'someFieldNotTouched', 'nameAwareTitleized' ].reduce((obj, key) => {
     if (data[key]) {
       obj[key] = data[key];
     }
@@ -29,11 +29,15 @@ describe('mongoose-title-case', function () {
     _model = new mongoose.Schema({
       someFieldTitleized:      String,
       someOtherFieldTitleized: String,
-      someFieldNotTouched:     String
+      someFieldNotTouched:     String,
+      nameAwareTitleized:      String
     });
 
     var _schema = _model.plugin(plugin, {
-      paths: [ 'someFieldTitleized', 'someOtherFieldTitleized' ]
+      paths: [ 'someFieldTitleized', 'someOtherFieldTitleized', {
+        path:    'nameAwareTitleized',
+        surname: true
+      }]
     });
 
     testModel = createModel('CryptifyTest', _schema);
@@ -101,5 +105,35 @@ describe('mongoose-title-case', function () {
       someFieldTitleized:  'Horowitz-Tree',
       someFieldNotTouched: 'Dont touch mE!'
     });
+  });
+
+  it('should handle double cased surnames', async () => {
+    var testRecord = await (new testModel({
+      someFieldTitleized:  'horOwitz-trEe',
+      nameAwareTitleized:  'mcandrews',
+      someFieldNotTouched: 'Dont touch mE!'
+    })).save();
+
+    expect(testRecord.toObject({ transform })).to.deep.equal({
+      someFieldTitleized:  'Horowitz-Tree',
+      someFieldNotTouched: 'Dont touch mE!',
+      nameAwareTitleized:  'McAndrews'
+    });
+
+    testRecord.nameAwareTitleized = 'macAndrews';
+    await testRecord.save();
+    expect(testRecord.nameAwareTitleized).to.equal('MacAndrews');
+
+    testRecord.nameAwareTitleized = 'FiTzGerAlD';
+    await testRecord.save();
+    expect(testRecord.nameAwareTitleized).to.equal('FitzGerald');
+
+    testRecord.nameAwareTitleized = 'o\'brian';
+    await testRecord.save();
+    expect(testRecord.nameAwareTitleized).to.equal('O\'Brian');
+
+    testRecord.nameAwareTitleized = 'o\'brian';
+    await testRecord.save();
+    expect(testRecord.nameAwareTitleized).to.equal('O\'Brian');
   });
 });

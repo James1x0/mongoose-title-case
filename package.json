@@ -1,6 +1,6 @@
 {
   "name": "mongoose-title-case",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Mongoose.js plugin for titlizing & trimming model paths",
   "main": "mongoose-title-case.js",
   "repository": {
@@ -8,7 +8,8 @@
     "url": "https://github.com/james1x0/mongoose-title-case"
   },
   "scripts": {
-    "test": "mocha \"test/**/*.js\" --reporter=spec"
+    "test": "mocha \"test/**/*.js\" --reporter=spec",
+    "test-watch": "mocha \"test/**/*.js\" --reporter=spec -w"
   },
   "directories": {
     "test": "test"
